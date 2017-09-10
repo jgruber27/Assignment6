@@ -73,7 +73,32 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
               });
     };
 
-    $scope.update = function(isValid) {
+    $scope.update = function(isValid, id) {
+      $scope.error = null;
+
+      /* 
+        Check that the form is valid. (https://github.com/paulyoder/angular-bootstrap-show-errors)
+       */
+      if (!isValid) {
+        $scope.$broadcast('show-errors-check-validity', 'articleForm');
+
+        return false;
+      }
+
+      /* Create the listing object */
+      var listing = {
+        name: $scope.name, 
+        code: $scope.code, 
+        address: $scope.address
+      };
+
+      Listings.update(id, listing)
+              .then(function(response) {
+                $state.go('listings.list', { successMessage: 'Listing succesfully updated!' });
+              }, function(error) {
+                $scope.error = 'Unable to update listing!\n' + error;
+              });
+    };
       /*
         Fill in this function that should update a listing if the form is valid. Once the update has 
         successfully finished, navigate back to the 'listing.list' state using $state.go(). If an error 
@@ -81,7 +106,14 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
        */
     };
 
-    $scope.remove = function() {
+    $scope.remove = function(id) {
+
+      Listings.delete(id)
+              .then(function(response) {
+                $state.go('listings.list', { successMessage: 'Listing deleted!' });
+              }, function(error) {
+                $scope.error = 'Unable to delete listing!\n' + error;
+              });            
       /*
         Implement the remove function. If the removal is successful, navigate back to 'listing.list'. Otherwise, 
         display the error. 
