@@ -73,24 +73,27 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
               });
     };
 
-    $scope.update = function(isValid, id) {
+    $scope.update = function(isValid, listing) {
       $scope.error = null;
 
-      /* 
-        Check that the form is valid. (https://github.com/paulyoder/angular-bootstrap-show-errors)
-       */
       if (!isValid) {
         $scope.$broadcast('show-errors-check-validity', 'articleForm');
 
         return false;
       }
 
-      /* Create the listing object */
-      var listing = {
-        name: $scope.name, 
-        code: $scope.code, 
-        address: $scope.address
-      };
+      var id = listing._id
+
+      if($scope.name){
+        listing.name = $scope.name;
+      }
+      if($scope.code){
+        listing.code = $scope.code;
+      }
+      if($scope.address){
+        listing.address = $scope.address;
+      }
+
 
       Listings.update(id, listing)
               .then(function(response) {
@@ -98,7 +101,7 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
               }, function(error) {
                 $scope.error = 'Unable to update listing!\n' + error;
               });
-    };
+    
       /*
         Fill in this function that should update a listing if the form is valid. Once the update has 
         successfully finished, navigate back to the 'listing.list' state using $state.go(). If an error 
