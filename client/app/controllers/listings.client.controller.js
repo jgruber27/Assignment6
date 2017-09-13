@@ -135,6 +135,6 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
         longitude: -82.3410518
       }, 
       zoom: 14
-    }
+    };
   }
 ]);
